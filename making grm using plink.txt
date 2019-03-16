@@ -1,0 +1,30 @@
+#!/bin/bash -l
+#PBS -l walltime=5:00:00,nodes=8,mem=254gb
+#PBS -m a
+#PBS -e /panfs/roc/groups/9/saonli/sealx017/2nd_proj_boltlmm/plink/plink_linux_x86_64/Pbs_folder/Pbs 
+#PBS -o /panfs/roc/groups/9/saonli/sealx017/2nd_proj_boltlmm/plink/plink_linux_x86_64/Pbs_folder/Pbs
+
+cd /panfs/roc/groups/9/saonli/shared/bb/Result
+
+#GCTA can generate the GRM so can PLINK but faster, you can supply ped and map file or binary files, here I am supplying binary files
+plink --bfile sample_binary --make-grm-bin  --out sample_grm
+
+#if you have high dimension you need to parallelize while calculating GRM in the following way,
+
+#!/bin/bash -l
+#PBS -l walltime=75:00:00,nodes=8,mem=998gb
+#PBS -m a
+
+#you need to submit an array of jobs, here I had used 200 jobs which partitions N individuals in N/200 groups. 
+#PBS -t 1-200
+
+#PBS -e Pbs
+#PBS -o Pbs
+cd /panfs/roc/groups/9/saonli/shared/bb/Result
+plink  --bfile sample_binary --make-grm-bin --parallel ${PBS_ARRAYID} 200 --out  sample_grm	
+ 
+# for combining obtained 200 parts use cat command this way, (slight change of names may be required)
+cat sample_grm.grm.id_* > test.grm.id
+cat sample_grm.grm.bin_*> test.grm.bin
+cat sample_grm.grm.N.bin_* > test.grm.N.bin
+#for grm pruning use rel-cutoff command. 

@@ -1,0 +1,19 @@
+#!/bin/bash -l
+#PBS -l walltime=5:00:00,nodes=1,mem=254Gb
+#PBS -m a
+#PBS -e Pbs
+#PBS -o Pbs
+
+cd /panfs/roc/groups/9/saonli/shared/bb/phenos/
+
+/panfs/roc/groups/9/saonli/sealx017/2nd_proj_boltlmm/BOLT-LMM_v2.3.2/bolt \ #use the location where the bolt software exists
+    --bed=/panfs/roc/groups/9/saonli/shared/bb/Result/sample_binary.bed \   #use the binary files location
+    --bim=/panfs/roc/groups/9/saonli/shared/bb/Result/sample_binary.bim \
+    --fam=/panfs/roc/groups/9/saonli/shared/bb/Result/sample_binary.fam\
+    --phenoFile=/panfs/roc/groups/9/saonli/shared/bb/phenos/sample_pheno.txt \ #use phenotype file location
+    --phenoCol=cpd \                                                           #name of the phenotype column you want to work with  
+    --lmm \
+    --LDscoresFile=../tables/LDSCORE.1000G_EUR.tab.gz \                        #needed for an additoinal caliberation to avoid ld bias (lmm also works without it), a file consisting ld scores, this one's precomputed and can be downloaded for european ancestry
+    --statsFile=/panfs/roc/groups/9/saonli/shared/bb/phenos/Result/sample.cpd.stats.gz\
+    --verboseStats
+    2>&1 | tee output.log

@@ -1,0 +1,18 @@
+#!/bin/bash -l
+#change to suitable walltime and memory required
+#----------------------------------------------------
+#PBS -l walltime=5:00:00,nodes=8,mem=254gb
+#PBS -m a
+#PBS -e /panfs/roc/groups/9/saonli/sealx017/2nd_proj_boltlmm/plink/plink_linux_x86_64/Pbs_folder/Pbs 
+#PBS -o /panfs/roc/groups/9/saonli/sealx017/2nd_proj_boltlmm/plink/plink_linux_x86_64/Pbs_folder/Pbs
+#use own addresses to store the above files
+
+cd /panfs/roc/groups/9/saonli/shared/bb/Result
+
+#command to convert from ped and map to bed, bim, fam format or known as binary format (binary format is used in GCTA and Bolt-LMM)
+plink --file sample --out sample_binary --make-bed 
+
+#also add the appropriate addresses of the plink program and the sample files and also where you want to store your output: sample_binary.
+
+#command to convert from bed, bim, fam format to ped and map
+plink  --bfile sample  --recode --tab --out  sample_ped	
